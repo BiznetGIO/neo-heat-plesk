@@ -68,8 +68,7 @@ resources:
             str_replace:
               template: |
                 #init script
-                apt-get update
-                apt-get install -y wget
+                yum install -y wget
 
                 email=$email
                 passwd=$password
