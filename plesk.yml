@@ -32,7 +32,7 @@ parameters:
     type: string
     label: Set Username
     description: Set username to virtual machine and plesk bundle.
-    default: "admin"
+    default: "ubuntu"
   email:
     type: string
     label: Set Email plesk
