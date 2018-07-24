@@ -124,6 +124,7 @@ resources:
         - config:
             str_replace:
               template: |
+                #!/bin/bash
                 cat <<'EOF' > /tmp/deploy.sh
                 #!/bin/bash
                 email=$1
