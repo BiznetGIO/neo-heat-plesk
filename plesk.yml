@@ -166,7 +166,8 @@ resources:
                 # Download Plesk AutoInstaller
 
                 echo "Downloading Plesk Auto-Installer"
-                wget https://installer.plesk.com/plesk-installer
+                wget https://installer.plesk.com/plesk-installer -O /tmp/plesk-installer
+                cd /tmp
                 echo
 
                 # Make Installed Executable
