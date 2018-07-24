@@ -67,12 +67,9 @@ resources:
         - config:
             str_replace:
               template: |
-                #init script
-                yum install -y wget
-
                 email=$email
                 passwd=$password
-                name='admin'
+                name=$username
                 agreement=true
 
                 # Plesk Activation Code - provide proper license for initialization, it will be replaced after cloning
