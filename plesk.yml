@@ -124,14 +124,16 @@ resources:
         - config:
             str_replace:
               template: |
-                email=$email
-                passwd=$password
-                name=$username
+                cat <<'EOF' > /tmp/deploy.sh
+                #!/bin/bash
+                email=$1
+                passwd=$2
+                name=$3
                 agreement=true
 
                 # Plesk Activation Code - provide proper license for initialization, it will be replaced after cloning
                 # leave as null if not providing key
-                activation_key=$activation_key
+                activation_key=$4
 
                 # Plesk UI View - can be set to Service Provider View (spv) or Power User View (puv)
                 plesk_ui=spv
@@ -336,6 +338,11 @@ resources:
                 echo "Your Plesk WordPress Edition is complete."
                 echo "Thank you for using the WordPress Edition Cookbook"
                 echo
+                EOF
+                cd /tmp
+                chmod +x deploy.sh
+                echo 'bash deploy.sh "$email" "$passwd" "$username" "$activation_key"' >deploy.log
+                bash deploy.sh "$email" "$passwd" "$username" "$activation_key" >>deploy.log
               params:
                 $email: {get_param: email}
                 $passwd: {get_param: password}
