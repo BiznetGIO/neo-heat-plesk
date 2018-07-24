@@ -46,6 +46,63 @@ parameters:
     description: Set activation key to plesk bundle.
 
 resources:
+  secgroup:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      name:
+        list_join: [-, [{ get_param: 'OS::stack_name' },neo,secgroup]]
+      rules:
+        - protocol: icmp
+        - protocol: udp
+        - protocol: tcp
+          port_range_min: 22
+          port_range_max: 22
+        - protocol: tcp
+          port_range_min: 25
+          port_range_max: 25
+        - protocol: tcp
+          port_range_min: 110
+          port_range_max: 110
+        - protocol: tcp
+          port_range_min: 143
+          port_range_max: 143
+        - protocol: tcp
+          port_range_min: 443
+          port_range_max: 443
+        - protocol: tcp
+          port_range_min: 465
+          port_range_max: 465
+        - protocol: tcp
+          port_range_min: 993
+          port_range_max: 993
+        - protocol: tcp
+          port_range_min: 8443
+          port_range_max: 8443
+        - protocol: tcp
+          port_range_min: 8447
+          port_range_max: 8447
+        - protocol: tcp
+          port_range_min: 8880
+          port_range_max: 8880
+        - protocol: tcp
+          port_range_min: 80
+          port_range_max: 80
+        - remote_mode: remote_group_id
+  
+  define_port:
+    type: OS::Neutron::Port
+    properties:
+      admin_state_up: true
+      network_id: { get_param: private_network }
+      security_groups:
+        - {get_resource: secgroup}
+       
+  floating:
+      type: OS::Neutron::FloatingIP
+      properties:
+        floating_network: {get_param: public_network}
+        port_id: {get_resource: define_port}
+        
   cloud_config:
     type: OS::Heat::MultipartMime
     properties:
@@ -283,50 +340,6 @@ resources:
                 $passwd: {get_param: password}
                 $username: {get_param: username}
                 $activation_key: {get_param: activation_key}
-          
-  
-  secgroup:
-    type: OS::Neutron::SecurityGroup
-    properties:
-      name:
-        list_join: [-, [{ get_param: 'OS::stack_name' },neo,secgroup]]
-      rules:
-        - protocol: icmp
-        - protocol: udp
-        - protocol: tcp
-          port_range_min: 22
-          port_range_max: 22
-        - protocol: tcp
-          port_range_min: 25
-          port_range_max: 25
-        - protocol: tcp
-          port_range_min: 110
-          port_range_max: 110
-        - protocol: tcp
-          port_range_min: 143
-          port_range_max: 143
-        - protocol: tcp
-          port_range_min: 443
-          port_range_max: 443
-        - protocol: tcp
-          port_range_min: 465
-          port_range_max: 465
-        - protocol: tcp
-          port_range_min: 993
-          port_range_max: 993
-        - protocol: tcp
-          port_range_min: 8443
-          port_range_max: 8443
-        - protocol: tcp
-          port_range_min: 8447
-          port_range_max: 8447
-        - protocol: tcp
-          port_range_min: 8880
-          port_range_max: 8880
-        - protocol: tcp
-          port_range_min: 80
-          port_range_max: 80
-        - remote_mode: remote_group_id
 
   create_vm:
     type: OS::Nova::Server
@@ -339,21 +352,6 @@ resources:
         - port: {get_resource: define_port}
       user_data_format: RAW
       user_data: {get_resource: cloud_config}
-        
-  
-  define_port:
-    type: OS::Neutron::Port
-    properties:
-      admin_state_up: true
-      network_id: { get_param: private_network }
-      security_groups:
-        - {get_resource: secgroup}
-       
-  floating:
-      type: OS::Neutron::FloatingIP
-      properties:
-        floating_network: {get_param: public_network}
-        port_id: {get_resource: define_port}
 
 outputs:
   user:
