@@ -44,6 +44,11 @@ parameters:
     type: string
     label: Set plesk activation key
     description: Set activation key to plesk bundle.
+  neo_type:
+    type: json
+    label: neo type metadata
+    description: Set neo type metadata
+    default: {"metadata": {"neo_type": "PLSK"}}
 
 resources:
   secgroup:
@@ -171,6 +176,7 @@ resources:
     properties:
       name: { get_param: 'OS::stack_name' }
       image: {get_param: image}
+      metadata: { get_param: [ neo_type, metadata ] }
       flavor: {get_param: flavor}
       key_name: {get_param: key_name}
       networks:
