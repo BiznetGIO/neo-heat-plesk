@@ -110,9 +110,10 @@ resources:
   floating:
       type: OS::Neutron::FloatingIP
       properties:
+        name:
+          list_join: [-, [PLSK,{ get_param: 'OS::stack_name' }]]
         floating_network: {get_param: public_network}
         port_id: {get_resource: define_port}
-        value_specs: {get_param: floating_specs}
 
   cloud_config:
     type: OS::Heat::MultipartMime
