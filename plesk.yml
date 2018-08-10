@@ -49,7 +49,7 @@ parameters:
     label: neo type metadata
     description: Set neo type metadata
     default: {"metadata": {"neo_type": "PLSK"}}
-  floating_specs
+  floating_specs:
     type: json
     label: neo spec for floating ip
     description: neo spec for floating ip
