@@ -49,6 +49,11 @@ parameters:
     label: neo type metadata
     description: Set neo type metadata
     default: {"metadata": {"neo_type": "PLSK"}}
+  floating_specs
+    type: json
+    label: neo spec for floating ip
+    description: neo spec for floating ip
+    default: {"type": "PLSK"}
 
 resources:
   secgroup:
@@ -107,6 +112,7 @@ resources:
       properties:
         floating_network: {get_param: public_network}
         port_id: {get_resource: define_port}
+        value_specs: {get_param: floating_specs}
 
   cloud_config:
     type: OS::Heat::MultipartMime
