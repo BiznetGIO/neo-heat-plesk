@@ -50,10 +50,10 @@ parameters:
     description: Set neo type metadata
     default: {"metadata": {"neo_type": "PLSK"}}
   floating_desc:
-    type: json
+    type: string
     label: neo description for floating ip
     description: neo description for floating ip
-    default: {"description":"PLSK"}
+    default: PLSK
 
 resources:
   secgroup:
@@ -110,7 +110,7 @@ resources:
   floating:
       type: OS::Neutron::FloatingIP
       properties:
-        value_specs: {get_param: floating_desc}
+        value_specs: {"description":{get_param: floating_desc}}
         floating_network: {get_param: public_network}
         port_id: {get_resource: define_port}
 
