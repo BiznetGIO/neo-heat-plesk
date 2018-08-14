@@ -209,4 +209,4 @@ outputs:
       list_join: [-, [{ get_param: 'OS::stack_name' },neo,secgroup]]
   vm_id:
     description: VM ID
-    value: {get_attr: [create_vm, server_id]}
+    value: {get_resource: server}
