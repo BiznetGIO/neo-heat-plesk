@@ -54,6 +54,14 @@ parameters:
     label: neo description for floating ip
     description: neo description for floating ip
     default: PLSK
+  package:
+    type: string
+    label: plesk package
+    description: plesk package
+    default: wordpress
+    constraints:
+      - allowed_values: [ wordpress, business ]
+        description: Value must be one of wordpress, business.
 
 resources:
   secgroup:
@@ -142,6 +150,7 @@ resources:
                 passwd=$2
                 name=$3
                 agreement=true
+                pkg=$4
 
                 # Plesk Activation Code - provide proper license for initialization, it will be replaced after cloning
                 # leave as null if not providing key
@@ -154,7 +163,7 @@ resources:
 
                 plesk bin init_conf --init -email $email -passwd $passwd -name $name -license_agreed $agreement
 
-                plesk bin settings --set solution_type="wordpress"
+                plesk bin settings --set solution_type=$pkg
                 echo
 
                 # Install Plesk Activation Key if provided
@@ -165,17 +174,24 @@ resources:
                   plesk bin license --install $activation_key
                   echo
                 fi
+
+                if [ $pkg == "business" ];then
+                  echo "Enabling Welcome Guide for the Plesk Business & Collaboration Edition"
+                  plesk ext welcome --select -preset business
+                  echo
+                fi
                 echo
                 EOF
                 cd /tmp
                 chmod +x deploy.sh
-                echo 'bash deploy.sh "$email" "$passwd" "$username" "$activation_key"' >deploy.log
-                bash deploy.sh "$email" "$passwd" "$username" "$activation_key" >>deploy.log
+                echo 'bash deploy.sh "$email" "$passwd" "$username" "$activation_key" "$package"' >deploy.log
+                bash deploy.sh "$email" "$passwd" "$username" "$activation_key" "$package" >>deploy.log
               params:
                 $email: {get_param: email}
                 $passwd: {get_param: password}
                 $username: {get_param: username}
                 $activation_key: {get_param: activation_key}
+                $package: {get_param: package}
 
   create_vm:
     type: OS::Nova::Server
