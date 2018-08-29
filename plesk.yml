@@ -141,6 +141,7 @@ resources:
                   list: |
                     $USERNAME:$PASSWORD
                   expire: False
+                ssh_pwauth: True
         - config:
             str_replace:
               template: |
