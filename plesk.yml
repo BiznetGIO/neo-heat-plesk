@@ -6,10 +6,6 @@ description: Template create plesk bundle.
 # PARAMETERS
 #####################################
 parameters:
-  key_name:
-    type: string
-    label: Key Name
-    description: Key name
   image:
     type: string
     label: Image name or ID
@@ -130,6 +126,7 @@ resources:
             str_replace:
               params:
                 $USERNAME : { get_param: username }
+                $PASSWORD : { get_param: password }
               template: |
                 #cloud-config
                 system_info:
@@ -140,6 +137,10 @@ resources:
                     groups: [wheel, adm, systemd-journal]
                     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
                     shell: /bin/bash
+                  chpasswd:
+                    list: |
+                      $USERNAME:$PASSWORD
+                    expire: False
         - config:
             str_replace:
               template: |
@@ -200,7 +201,6 @@ resources:
       image: {get_param: image}
       metadata: { get_param: [ neo_type, metadata ] }
       flavor: {get_param: flavor}
-      key_name: {get_param: key_name}
       networks:
         - port: {get_resource: define_port}
       user_data_format: RAW
@@ -216,9 +216,6 @@ outputs:
   controller:
     description: Controller IP
     value: {get_attr: [floating,floating_ip_address]}
-  key_name:
-    description: Key Name
-    value: {get_param: key_name}
   sec_group:
     description: Security Group
     value:
