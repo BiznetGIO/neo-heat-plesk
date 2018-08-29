@@ -6,6 +6,10 @@ description: Template create plesk bundle.
 # PARAMETERS
 #####################################
 parameters:
+  key_name:
+    type: string
+    label: Key Name
+    description: Key name
   image:
     type: string
     label: Image name or ID
@@ -60,18 +64,6 @@ parameters:
         description: Value must be one of wordpress, business.
 
 resources:
-  key_name_post_fix:
-    type: OS::Heat::RandomString
-    properties:
-      length: 4
-      
-  generated_key_pair:
-    type: OS::Nova::KeyPair
-    properties:
-      name:
-        list_join: [-, [{ get_param: 'OS::stack_name' },{get_resource: key_name_post_fix}]]
-      save_private_key: True
-  
   secgroup:
     type: OS::Neutron::SecurityGroup
     properties:
@@ -208,16 +200,13 @@ resources:
       image: {get_param: image}
       metadata: { get_param: [ neo_type, metadata ] }
       flavor: {get_param: flavor}
-      key_name: {get_resource: generated_key_pair}
+      key_name: {get_param: key_name}
       networks:
         - port: {get_resource: define_port}
       user_data_format: RAW
       user_data: {get_resource: cloud_config}
 
 outputs:
-  private_key:
-    description: Private key
-    value: { get_attr: [ generated_key_pair, private_key ] }
   user:
     description: User Name
     value: {get_param: username}
