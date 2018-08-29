@@ -69,7 +69,7 @@ resources:
     type: OS::Nova::KeyPair
     properties:
       name:
-        list_join: [-, [{ get_param: stack_name },{get_resource: key_name_post_fix}]]
+        list_join: [-, [{ get_param: 'OS::stack_name' },{get_resource: key_name_post_fix}]]
       save_private_key: True
   
   secgroup:
