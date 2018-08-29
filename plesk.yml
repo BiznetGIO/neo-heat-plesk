@@ -150,7 +150,7 @@ resources:
                 passwd=$2
                 name=$3
                 agreement=true
-                pkg=$4
+                pkg=$5
 
                 # Plesk Activation Code - provide proper license for initialization, it will be replaced after cloning
                 # leave as null if not providing key
